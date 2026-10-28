@@ -5,7 +5,7 @@ This document describes the security controls and limitations of assassin-proxy-
 ## 1. Data-flow boundaries
 
 ### Static search homepage
-The browser renders the static homepage and submits searches directly to DuckDuckGo using HTTPS. The app does not receive or store the search query when the native search form is used. DuckDuckGo receives the query, and the browser/network environment can still observe normal connection metadata. This design is not anonymous browsing and does not encrypt a query from the search provider.
+The browser renders the static GitHub Pages homepage and submits searches directly to DuckDuckGo using HTTPS in a separate tab. The project site does not receive or store the search query. DuckDuckGo receives the query, and the browser/network environment can still observe normal connection metadata. Opening a separate tab is not the same as a separate browser profile and does not guarantee isolation from local browser history. This design is not anonymous browsing and does not encrypt a query from the search provider.
 
 ### Optional page reader
 The browser sends a URL to the Node.js API. The server validates it, fetches an allowlisted HTTPS page, extracts a limited amount of text, and returns JSON. The server necessarily sees the requested URL and retrieved content while processing the request. Do not describe this flow as end-to-end encrypted: TLS protects connections in transit, but it does not hide data from the application server or the destination website.
@@ -14,7 +14,7 @@ The app does not persist page content by design. If persistence, accounts, saved
 
 ## 2. Encapsulation boundaries
 
-- index.html: static browser UI and direct DuckDuckGo navigation.
+- index.html: static GitHub Pages UI and direct DuckDuckGo navigation in a separate tab.
 - web-proxy/index.html: Node-hosted UI variant with optional reader interaction.
 - server.mjs: HTTP API, input validation, outbound fetch policy, content extraction, and security headers.
 - package.json: explicit runtime and dependency boundary.
@@ -28,7 +28,7 @@ Keep secrets, host policy, and deployment settings out of browser JavaScript. Th
 ### Browser to deployment
 For production, serve the site and API over HTTPS with TLS 1.2 or newer (TLS 1.3 preferred). Use a managed platform or reverse proxy that correctly provisions and renews certificates. Redirect HTTP to HTTPS at the edge and enable HSTS only after confirming the whole intended hostname is HTTPS-capable. Do not commit private keys or certificates to the repository.
 
-GitHub Pages serves only the static homepage and does not run the Node API. Its HTTPS protects the static site delivery; the reader API needs a separate Node-capable host with HTTPS. If the UI and API are hosted on different origins, configure a specific CORS allowlist and CSRF protections before enabling browser access; do not use wildcard CORS for a credentialed API.
+GitHub Pages serves only the static homepage and does not run the Node API. Its HTTPS protects the static site delivery; the optional reader API needs a separate Node-capable host with HTTPS. The Pages workflow deploys only the root index.html. If the UI and API are hosted on different origins, configure a specific CORS allowlist and CSRF protections before enabling browser access; do not use wildcard CORS for a credentialed API.
 
 ### Server to destination
 The reader permits HTTPS URLs only and validates every redirect against the host allowlist. TLS certificate validation should remain enabled; do not use insecure TLS flags or disable certificate verification. The reader's allowlist is a policy boundary, not a replacement for outbound network restrictions.
