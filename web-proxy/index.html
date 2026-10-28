@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Brave Search · Reader</title>
+<title>DuckDuckGo · Reader</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9edf5;background:#0b1020;font-synthesis:none}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
@@ -23,7 +23,7 @@ footer{max-width:900px;margin:0 auto;padding:0 22px 34px;color:#66748e;font-size
 </style>
 </head>
 <body>
-<header><div class="brand"><span class="logo">✦</span> Search & Reader</div><span class="pill">Brave Search API · Public pages</span></header>
+<header><div class="brand"><span class="logo">✦</span> DuckDuckGo Reader</div><span class="pill">DuckDuckGo · Public pages</span></header>
 <main>
 <section class="hero">
 <h1>Find it. <span>Read it.</span></h1>
@@ -32,9 +32,9 @@ footer{max-width:900px;margin:0 auto;padding:0 22px 34px;color:#66748e;font-size
 <button class="tab active" id="searchTab" role="tab" aria-selected="true">Search the web</button>
 <button class="tab" id="readerTab" role="tab" aria-selected="false">Read a page</button>
 </div>
-<form class="searchbar" id="searchForm"><input id="query" aria-label="Search query" placeholder="Search anything with Brave…" autocomplete="off" required><button class="primary" id="searchButton">Search ↗</button></form>
+<form class="searchbar" id="searchForm"><input id="query" aria-label="Search query" placeholder="Search the web with DuckDuckGo…" autocomplete="off" required><button class="primary" id="searchButton">Search ↗</button></form>
 <form class="searchbar" id="readerForm" style="display:none"><input id="pageUrl" aria-label="Page URL" type="url" placeholder="https://example.com/article" autocomplete="url" required><button class="primary" id="readButton">Read page ↗</button></form>
-<div class="hint" id="hint">Search results are provided by Brave. Search requires a server-side API key.</div>
+<div class="hint" id="hint">Search opens DuckDuckGo directly. No search API key required.</div>
 <div id="status" role="status" aria-live="polite"></div>
 </section>
 <section id="results" class="results" aria-label="Search results"></section>
@@ -52,28 +52,20 @@ function setMode(mode) {
   searchTab.setAttribute("aria-selected", String(searching)); readerTab.setAttribute("aria-selected", String(!searching));
   $("#searchForm").style.display = searching ? "flex" : "none";
   $("#readerForm").style.display = searching ? "none" : "flex";
-  $("#hint").textContent = searching ? "Search results are provided by Brave. Search requires a server-side API key." : "Reads text from allowlisted public pages only. No scripts, cookies, or interactive page content are loaded.";
+  $("#hint").textContent = searching ? "Search opens DuckDuckGo directly. No search API key required." : "Reads text from allowlisted public pages only. No scripts, cookies, or interactive page content are loaded.";
   $("#status").textContent = ""; $("#results").replaceChildren(); $("#readLayout").style.display = "none";
 }
 searchTab.addEventListener("click", () => setMode("search"));
 readerTab.addEventListener("click", () => setMode("reader"));
 function setStatus(message) { $("#status").textContent = message; }
 function el(tag, cls, value) { const n = document.createElement(tag); if (cls) n.className = cls; if (value !== undefined) n.textContent = value; return n; }
-$("#searchForm").addEventListener("submit", async event => {
-  event.preventDefault(); const q = $("#query").value.trim(); if (!q) return;
-  $("#searchButton").disabled = true; $("#results").replaceChildren(); $("#readLayout").style.display = "none"; setStatus("Searching…");
-  try {
-    const response = await fetch("/api/search?q=" + encodeURIComponent(q));
-    const data = await response.json(); if (!response.ok) throw new Error(data.error || "Search failed.");
-    if (!data.results.length) { setStatus("No results found."); return; }
-    setStatus("Showing " + data.results.length + " results.");
-    for (const item of data.results) {
-      const card = el("article", "result"), title = el("h3"), link = el("a", "", item.title || item.url);
-      link.href = item.url; link.target = "_blank"; link.rel = "noopener noreferrer"; title.append(link);
-      card.append(title, el("div", "url", item.url), el("p", "", item.description)); $("#results").append(card);
-    }
-  } catch (error) { setStatus(error.message); }
-  finally { $("#searchButton").disabled = false; }
+$("#searchForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const q = $("#query").value.trim();
+  if (!q) return;
+  const destination = new URL("https://duckduckgo.com/");
+  destination.searchParams.set("q", q);
+  window.location.assign(destination.href);
 });
 $("#readerForm").addEventListener("submit", async event => {
   event.preventDefault(); const url = $("#pageUrl").value.trim(); if (!url) return;
