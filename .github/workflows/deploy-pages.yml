@@ -32,8 +32,8 @@ jobs:
               "DuckDuckGo HTTPS action": 'action="https://duckduckgo.com/"' in html,
               "GET search method": 'method="get"' in html,
               "query parameter name": 'name="q"' in html,
-              "separate tab": 'target="_blank"' in html,
-              "noopener protection": 'rel="noopener noreferrer"' in html,
+              "same-tab navigation": 'target="_self"' in html,
+              "same-tab search form": 'target="_self"' in html,
               "no API dependency in static page": "/api/read" not in html and "/api/health" not in html,
           }
           for name, passed in checks.items():
