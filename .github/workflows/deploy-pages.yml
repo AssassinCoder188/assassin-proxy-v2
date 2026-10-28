@@ -1,4 +1,4 @@
-name: Deploy DuckDuckGo search homepage
+name: Deploy and verify DuckDuckGo search homepage
 
 on:
   push:
@@ -18,11 +18,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Verify static DuckDuckGo search form
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          checks = {
+              "DuckDuckGo HTTPS action": 'action="https://duckduckgo.com/"' in html,
+              "GET search method": 'method="get"' in html,
+              "query parameter name": 'name="q"' in html,
+              "separate tab": 'target="_blank"' in html,
+              "noopener protection": 'rel="noopener noreferrer"' in html,
+              "no API dependency in static page": "/api/read" not in html and "/api/health" not in html,
+          }
+          for name, passed in checks.items():
+              print(f'{"PASS" if passed else "FAIL"}: {name}')
+          if not all(checks.values()):
+              raise SystemExit("DuckDuckGo homepage verification failed.")
+          PY
       - name: Prepare static site
         run: |
           mkdir -p dist
@@ -37,7 +55,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: verify
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
