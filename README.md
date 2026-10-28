@@ -47,3 +47,7 @@ The root `index.html` is a standalone search homepage. In GitHub, open **Setting
 ### Full app with the optional reader
 
 Deploy to a Node.js 20+ host that supports outbound HTTPS and runs `npm start`. Set `READER_ALLOWED_HOSTS` as a server environment variable for the reader. No search provider key is needed.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the data-flow boundaries, HTTPS/TLS guidance, application-layer encryption decisions, reader SSRF limitations, secrets handling, and deployment verification checklist.
