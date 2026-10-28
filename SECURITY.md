@@ -5,7 +5,7 @@ This document describes the security controls and limitations of assassin-proxy-
 ## 1. Data-flow boundaries
 
 ### Static search homepage
-The browser renders the static GitHub Pages homepage and submits searches directly to DuckDuckGo using HTTPS in a separate tab. The project site does not receive or store the search query. DuckDuckGo receives the query, and the browser/network environment can still observe normal connection metadata. Opening a separate tab is not the same as a separate browser profile and does not guarantee isolation from local browser history. This design is not anonymous browsing and does not encrypt a query from the search provider.
+The browser renders the static GitHub Pages homepage and submits searches directly to DuckDuckGo using HTTPS in the same tab. The project site does not receive or store the search query. DuckDuckGo receives the query, and the browser/network environment can still observe normal connection metadata. Same-tab navigation is not the same as a separate browser profile and does not guarantee isolation from local browser history. This design is not anonymous browsing and does not encrypt a query from the search provider.
 
 ### Optional page reader
 The browser sends a URL to the Node.js API. The server validates it, fetches an allowlisted HTTPS page, extracts a limited amount of text, and returns JSON. The server necessarily sees the requested URL and retrieved content while processing the request. Do not describe this flow as end-to-end encrypted: TLS protects connections in transit, but it does not hide data from the application server or the destination website.
