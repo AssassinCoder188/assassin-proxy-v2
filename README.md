@@ -1,53 +1,30 @@
-# assassin-proxy-v2 — DuckDuckGo & Reader
+# assassin-proxy-v2 — DuckDuckGo Search
 
-A DuckDuckGo search homepage that works without a search API key, plus an optional Node.js text reader for explicitly allowlisted public HTTPS pages.
+A static GitHub Pages search homepage. Searches are submitted directly to DuckDuckGo over HTTPS in a new tab. No search API key, Node.js server, search proxy, or database is needed for the Pages site.
 
-## Requirements
+## GitHub Pages deployment
 
-- Node.js 20+
-- A deliberate server-side host allowlist to enable the optional reader
+1. In the repository, open **Settings → Pages**.
+2. Set **Build and deployment → Source** to **GitHub Actions**.
+3. Open the **Actions** tab and make sure **Deploy and verify DuckDuckGo search homepage** succeeds.
+4. Open the Pages URL shown in **Settings → Pages**.
 
-## Run locally
+The workflow checks the search form's destination, HTTP method, query parameter, separate-tab behavior, and absence of backend API calls before deploying the root `index.html`.
 
-```sh
-npm install
-cp .env.example .env
-```
+## How search and separation work
 
-Set `READER_ALLOWED_HOSTS` in `.env` if you want to enable the reader, then start the server:
+- The form submits to `https://duckduckgo.com/?q=...` using the standard `q` parameter.
+- Results open in a separate tab, leaving the GitHub Pages homepage open.
+- This site does not store search history, use cookies or local storage, or send search queries to a project backend.
+- DuckDuckGo receives the search query and normal connection metadata. Your browser may keep a history entry for the results tab.
+- A website cannot create an isolated browser profile or prevent the operating system, browser, extensions, or network from observing their normal activity. For stronger local separation, open the Pages site in a separate browser profile or private window.
 
-```sh
-set -a; . ./.env; set +a
-npm start
-```
+## Optional Node.js reader
 
-Open http://localhost:3000. Searches navigate directly to DuckDuckGo using your browser; no search API key or search backend is required.
+The repository still contains `server.mjs` and `web-proxy/index.html` for the optional public-page reader when running on a Node.js host. **GitHub Pages cannot run Node.js or API endpoints**, so that reader is not part of the Pages deployment. The static homepage intentionally has no reader button that would fail on GitHub Pages.
 
-- `READER_ALLOWED_HOSTS`: comma-separated hostnames/domains the page reader may fetch. Example: `example.com,docs.example.org`. Empty means reader access is disabled.
-- `PORT`: optional server port (default `3000`).
-
-## Endpoints
-
-- `GET /api/health` — reports whether reader configuration is present.
-- `POST /api/read` with JSON `{"url":"https://example.com/page"}` — returns extracted title, description, plain text, and a limited list of links.
-
-## Safety model and limitations
-
-- The reader accepts HTTPS only, rejects URL credentials, nonstandard ports, IP-literal and local hostnames, checks DNS answers against private/reserved address ranges, validates each redirect, limits redirects and response size, and accepts HTML/plain text only.
-- Configure a narrow allowlist. Do not expose the reader endpoint publicly without adding authentication and rate limiting.
-- Page scripts are never executed; returned content is extracted into text. This is not a general-purpose proxy and does not provide network-filter bypass, anonymity, or cloaking.
-- For production use, add outbound egress restrictions at the network/container layer and pin/validate resolved IPs at connection time to mitigate DNS rebinding; add authentication, per-user rate limits, logging and monitoring.
-
-## Deploy
-
-### Static search homepage (GitHub Pages)
-
-The root `index.html` is a standalone search homepage. In GitHub, open **Settings → Pages** and set **Build and deployment → Source** to **GitHub Actions**. The workflow at `.github/workflows/deploy-pages.yml` publishes the root `index.html` whenever it changes on `main`. Open the **Actions** tab and check that **Deploy DuckDuckGo search homepage** succeeds, then use the Pages URL shown in **Settings → Pages**. The search form submits directly to `https://duckduckgo.com/?q=...`; it does not need Node.js, a backend, or an API key. The optional reader tab is hidden on static hosting because `/api/read` requires the Node server.
-
-### Full app with the optional reader
-
-Deploy to a Node.js 20+ host that supports outbound HTTPS and runs `npm start`. Set `READER_ALLOWED_HOSTS` as a server environment variable for the reader. No search provider key is needed.
+To run the optional server separately, use Node.js 20+, run `npm install`, configure `READER_ALLOWED_HOSTS` on the server, and run `npm start`. Do not assume that the optional reader is available on the GitHub Pages URL.
 
 ## Security
 
-See [SECURITY.md](SECURITY.md) for the data-flow boundaries, HTTPS/TLS guidance, application-layer encryption decisions, reader SSRF limitations, secrets handling, and deployment verification checklist.
+See [SECURITY.md](SECURITY.md) for transport encryption, application boundaries, reader SSRF limitations, secrets handling, and production verification notes.
