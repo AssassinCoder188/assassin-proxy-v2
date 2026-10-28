@@ -3,72 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark">
 <meta name="referrer" content="no-referrer">
-<title>DuckDuckGo Search | Private-by-design launch page</title>
+<title>Assassin Search — Private-by-design metasearch</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#edf1fa;background:#0b1020;font-synthesis:none}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
-header{max-width:1080px;margin:auto;padding:26px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.03em;font-size:19px}
-.logo{width:35px;height:35px;border-radius:12px;background:#fb542b;display:grid;place-items:center;color:#fff;font-size:21px;box-shadow:0 7px 22px #fb542b38}
-.pill{border:1px solid #ffffff20;border-radius:999px;padding:7px 11px;color:#aeb9d0;font-size:12px}
-main{max-width:850px;margin:9vh auto 70px;padding:0 22px}
-.hero{text-align:center;margin-bottom:34px}
-h1{font-size:clamp(35px,6vw,58px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}
-h1 span{color:#ff704d}
-.lead{color:#aab5ca;margin:0 auto;font-size:16px;line-height:1.7;max-width:600px}
-.searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004;margin:28px 0 0}
-.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:13px;font:inherit;font-size:16px}
-.searchbar input::placeholder{color:#7887a2}
-.searchbar input:focus-visible{outline:2px solid #ff704d;outline-offset:2px;border-radius:8px}
-button{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 20px;font:600 15px inherit;cursor:pointer;white-space:nowrap}
-button:hover{background:#ed4f2b}
-.hint{color:#7e8ba4;font-size:12px;text-align:center;margin:14px 0 0;line-height:1.7}
-.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:38px}
-.card{padding:19px;border:1px solid #ffffff16;border-radius:16px;background:#11192b}
-.card h2{font-size:15px;margin:0 0 8px}
-.card p{font-size:13px;line-height:1.7;color:#aab5ca;margin:0}
-.card a{color:#ff987f}
-footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size:12px;text-align:center;line-height:1.8}
-@media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:6vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.lead{font-size:14px}.info{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
+header{max-width:1080px;margin:auto;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.03em;font-size:19px}.logo{width:35px;height:35px;border-radius:12px;background:#fb542b;display:grid;place-items:center;color:white;font-size:21px}.pill{border:1px solid #ffffff20;border-radius:999px;padding:7px 11px;color:#aeb9d0;font-size:12px}
+main{max-width:850px;margin:7vh auto 70px;padding:0 22px}.hero{text-align:center;margin-bottom:28px}h1{font-size:clamp(35px,6vw,58px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}h1 span{color:#ff704d}.lead{color:#aab5ca;margin:0 auto;font-size:16px;line-height:1.7;max-width:620px}
+.searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004;margin:26px 0 0}.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:13px;font:inherit;font-size:16px}.searchbar input::placeholder{color:#7887a2}button{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 20px;font:600 15px inherit;cursor:pointer;white-space:nowrap}button:hover{background:#ed4f2b}button:disabled{opacity:.6;cursor:wait}
+.hint{color:#7e8ba4;font-size:12px;text-align:center;margin:14px 0 0;line-height:1.7}.settings{margin:22px 0 18px;padding:16px;border:1px solid #ffffff17;border-radius:14px;background:#11192b}.settings summary{cursor:pointer;color:#c6d0e2;font-size:13px;font-weight:650}.settings p{color:#9eabc2;font-size:12px;line-height:1.6}.config{display:flex;gap:8px;margin-top:12px}.config input{flex:1;min-width:0;background:#0b1020;color:#edf1fa;border:1px solid #ffffff25;border-radius:9px;padding:10px;font:inherit;font-size:13px}.config button{font-size:12px;padding:9px 12px}
+#status{min-height:22px;color:#ffb39e;font-size:13px;margin:14px 2px}.results{display:grid;gap:12px}.result{padding:19px 20px;border:1px solid #ffffff14;border-radius:16px;background:#11192b}.result h2{font-size:17px;font-weight:650;margin:0 0 8px;line-height:1.4}.result a{color:#91baff;text-decoration:none}.result a:hover{text-decoration:underline}.url{font-size:12px;color:#7f91ad;overflow-wrap:anywhere;margin-bottom:8px}.result p{margin:0;color:#c0c9da;line-height:1.6;font-size:14px}.result .source{font-size:11px;color:#7f91ad;margin-top:10px}.empty{padding:26px;text-align:center;color:#9eabc2;border:1px dashed #ffffff25;border-radius:14px;line-height:1.7}
+.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:32px}.card{padding:18px;border:1px solid #ffffff16;border-radius:16px;background:#11192b}.card h2{font-size:14px;margin:0 0 8px}.card p{font-size:12px;line-height:1.7;color:#aab5ca;margin:0}footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size:12px;text-align:center;line-height:1.8}
+@media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:5vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.lead{font-size:14px}.info{grid-template-columns:1fr}.config{flex-wrap:wrap}.config input{flex-basis:100%}.result{padding:16px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><span class="logo" aria-hidden="true">✦</span> DuckDuckGo Search</div>
-  <span class="pill">Static · No search API key</span>
-</header>
+<header><div class="brand"><span class="logo" aria-hidden="true">✦</span> Assassin Search</div><span class="pill">Metasearch · Same-page results</span></header>
 <main>
-  <section class="hero" aria-labelledby="title">
-    <h1 id="title">Search on your terms<span>.</span></h1>
-    <p class="lead">A simple search launch page. Your query is sent directly to DuckDuckGo in this same tab.</p>
-    <form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get" target="_self">
-      <input id="query" name="q" type="search" aria-label="Search DuckDuckGo" placeholder="What would you like to search?" autocomplete="off" required>
-      <button type="submit">Search DuckDuckGo ↗</button>
-    </form>
-    <p class="hint">This page does not save searches. DuckDuckGo receives the query, and your browser may keep a normal history entry for the results page.</p>
-  </section>
-  <section class="info" aria-label="How it works">
-    <article class="card">
-      <h2>Direct DuckDuckGo search</h2>
-      <p>The form uses DuckDuckGo's HTTPS search URL and the standard <code>q</code> query parameter. No API key, search proxy, or backend is needed.</p>
-    </article>
-    <article class="card">
-      <h2>Same tab, not a separate device</h2>
-      <p>Search results replace this page in the same tab. This static site cannot create a separate browser profile or isolate activity from your device's browser history, extensions, operating system, or network. For stronger local separation, use a separate browser profile or a private window.</p>
-    </article>
-    <article class="card">
-      <h2>No search history stored here</h2>
-      <p>This static page has no search-history code, analytics, cookies, or local storage. It does not send the query to a server operated by this project.</p>
-    </article>
-    <article class="card">
-      <h2>Know where the query goes</h2>
-      <p>When you submit a search, DuckDuckGo receives your query and normal connection metadata. See <a href="https://duckduckgo.com/privacy" target="_blank" rel="noopener noreferrer">DuckDuckGo's privacy policy</a>.</p>
-    </article>
-  </section>
+<section class="hero" aria-labelledby="title">
+<h1 id="title">Search on your terms<span>.</span></h1>
+<p class="lead">A clean search interface that keeps results on this page. Connect a search backend you control to fetch results from multiple search engines.</p>
+<form class="searchbar" id="searchForm"><input id="query" type="search" aria-label="Search the web" placeholder="What would you like to search?" autocomplete="off" required maxlength="300"><button id="searchButton" type="submit">Search ↗</button></form>
+<p class="hint">Search results render here; this page won't navigate to the search provider.</p>
+</section>
+<details class="settings" id="settings">
+<summary>Search backend settings</summary>
+<p>Enter the HTTPS origin of your deployed Assassin Search API (for example, https://search-api.example.com). This origin is kept only in this tab's session storage. Search queries are sent to that server and to the configured search provider.</p>
+<div class="config"><input id="apiBase" type="url" inputmode="url" placeholder="https://your-search-api.example.com" aria-label="Search API base URL"><button type="button" id="saveApi">Connect</button><button type="button" id="clearApi">Clear</button></div>
+<p id="apiState">No backend connected. Deploy the server and configure SEARXNG_URL to enable full results.</p>
+</details>
+<div id="status" role="status" aria-live="polite"></div>
+<section id="results" class="results" aria-label="Search results"></section>
+<section class="info" aria-label="How it works">
+<article class="card"><h2>Full results need a backend</h2><p>GitHub Pages hosts this interface only. The separate Node.js API queries a configured SearXNG metasearch instance; it does not scrape DuckDuckGo's private endpoints.</p></article>
+<article class="card"><h2>Privacy boundaries</h2><p>The API receives your query. The metasearch instance and its upstream engines may also receive it. HTTPS protects data in transit, but this is not anonymity or a separate browser profile.</p></article>
+</section>
 </main>
-<footer>Hosted as a static GitHub Pages site. Searches navigate in the same tab. HTTPS protects the connection, but this page does not isolate activity from your device or provide anonymity.</footer>
+<footer>GitHub Pages serves this static interface. Search APIs run separately. External result links open only when you choose them.</footer>
+<script>
+const $ = s => document.querySelector(s);
+const form = $("#searchForm"), query = $("#query"), results = $("#results"), status = $("#status"), searchButton = $("#searchButton");
+const apiInput = $("#apiBase"), apiState = $("#apiState");
+let apiBase = "";
+try { apiBase = sessionStorage.getItem("assassinSearchApi") || ""; } catch {}
+apiInput.value = apiBase;
+function normalizeBase(raw) {
+  const u = new URL(raw);
+  if (u.protocol !== "https:" && u.hostname !== "localhost" && u.hostname !== "127.0.0.1") throw new Error("Use an HTTPS API URL (HTTP is allowed only for localhost).");
+  if (u.username || u.password || u.search || u.hash) throw new Error("Enter only the API origin, without credentials, query, or fragment.");
+  return u.origin;
+}
+function setApiState(message) { apiState.textContent = message; }
+$("#saveApi").addEventListener("click", () => {
+  try {
+    apiBase = normalizeBase(apiInput.value.trim());
+    sessionStorage.setItem("assassinSearchApi", apiBase);
+    setApiState("Connected origin set for this tab: " + apiBase);
+    status.textContent = "";
+  } catch (e) { setApiState(e.message); }
+});
+$("#clearApi").addEventListener("click", () => {
+  apiBase = ""; apiInput.value = "";
+  try { sessionStorage.removeItem("assassinSearchApi"); } catch {}
+  setApiState("Backend cleared. Configure an API URL before searching.");
+  results.replaceChildren(); status.textContent = "";
+});
+function addText(tag, cls, value) { const node = document.createElement(tag); if (cls) node.className = cls; node.textContent = value || ""; return node; }
+function safeHttpUrl(value) {
+  try { const u = new URL(value); return (u.protocol === "https:" || u.protocol === "http:") ? u.href : ""; } catch { return ""; }
+}
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  const q = query.value.trim();
+  if (!q) return;
+  if (!apiBase) {
+    $("#settings").open = true;
+    setApiState("Connect a deployed API first. GitHub Pages cannot run the search backend itself.");
+    status.textContent = "Search backend not configured.";
+    return;
+  }
+  searchButton.disabled = true; results.replaceChildren(); status.textContent = "Searching…";
+  try {
+    const endpoint = new URL("/api/search", apiBase);
+    endpoint.searchParams.set("q", q);
+    const response = await fetch(endpoint, { headers: { "Accept": "application/json" }, mode: "cors", credentials: "omit" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Search request failed.");
+    if (!Array.isArray(data.results) || !data.results.length) {
+      results.append(addText("div", "empty", "No results returned. Try another query or check the backend's search engine configuration."));
+      status.textContent = "Search complete · 0 results";
+      return;
+    }
+    for (const item of data.results) {
+      const href = safeHttpUrl(item.url);
+      if (!href || typeof item.title !== "string") continue;
+      const card = addText("article", "result", "");
+      const heading = addText("h2", "", "");
+      const link = addText("a", "", item.title); link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer";
+      heading.append(link);
+      card.append(heading, addText("div", "url", new URL(href).hostname + new URL(href).pathname));
+      if (typeof item.snippet === "string" && item.snippet) card.append(addText("p", "", item.snippet));
+      if (item.engine) card.append(addText("div", "source", "Source engine: " + item.engine));
+      results.append(card);
+    }
+    status.textContent = "Search complete · " + results.children.length + " results. Result links open in a new tab when selected.";
+  } catch (error) {
+    status.textContent = error.message || "Could not reach the search backend.";
+  } finally { searchButton.disabled = false; }
+});
+</script>
 </body>
 </html>
