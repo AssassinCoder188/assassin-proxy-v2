@@ -67,14 +67,17 @@ Before calling a deployment production-ready, verify:
 1. The actual public URL uses HTTPS and presents a valid certificate.
 2. HTTP redirects to HTTPS at the hosting edge.
 3. npm start succeeds after installing dependencies.
-4. /api/health returns expected configuration status.\n5. /api/search rejects empty and overlong queries, rate limits requests, and returns normalized HTTP(S) result links.\n6. Cross-origin requests are rejected unless their Origin is explicitly allowed by ALLOWED_ORIGINS.\n7. SearXNG JSON output is enabled and the API can reach the configured SEARXNG_URL.
-5. A host outside READER_ALLOWED_HOSTS is rejected.
-6. HTTP, local hostnames, IP-literal targets, disallowed ports, and redirects to disallowed hosts are rejected.
-7. Oversized or slow responses are stopped.
-8. The reader rate limit returns HTTP 429 after its configured threshold.
-9. Response headers include the expected Helmet security headers.
-10. GitHub Actions deployment succeeds and the deployed homepage matches the intended root index.html.
-11. Logs and repository history contain no secrets.
-12. Outbound egress policy blocks internal networks independently of the application.
+4. `/api/health` returns expected configuration status.
+5. `/api/search` rejects empty and overlong queries, rate limits requests, and returns normalized HTTP(S) result links.
+6. Cross-origin requests are rejected unless their Origin is explicitly allowed by `ALLOWED_ORIGINS`.
+7. SearXNG JSON output is enabled and the API can reach the configured `SEARXNG_URL`.
+8. A host outside `READER_ALLOWED_HOSTS` is rejected.
+9. HTTP, local hostnames, IP-literal targets, disallowed ports, and redirects to disallowed hosts are rejected.
+10. Oversized or slow responses are stopped.
+11. The reader rate limit returns HTTP 429 after its configured threshold.
+12. Response headers include the expected Helmet security headers.
+13. GitHub Actions deployment succeeds and the deployed homepage matches the intended root `index.html`.
+14. Logs and repository history contain no secrets.
+15. Outbound egress policy blocks internal networks independently of the application.
 
 These checks must be run against the actual deployment. A successful code commit alone does not prove deployment or security controls are active.
