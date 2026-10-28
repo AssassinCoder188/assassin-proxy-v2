@@ -5,7 +5,7 @@ This document describes the security controls and limitations of assassin-proxy-
 ## 1. Data-flow boundaries
 
 ### Static search homepage
-The browser renders the static GitHub Pages homepage and submits searches directly to DuckDuckGo using HTTPS in the same tab. The project site does not receive or store the search query. DuckDuckGo receives the query, and the browser/network environment can still observe normal connection metadata. Same-tab navigation is not the same as a separate browser profile and does not guarantee isolation from local browser history. This design is not anonymous browsing and does not encrypt a query from the search provider.
+The browser renders the static GitHub Pages interface and sends searches to a separately hosted API configured by the user. The API receives the query and forwards it to the configured SearXNG instance, which may contact upstream search engines. GitHub Pages does not host the API. Same-page results do not imply isolation from browser history or anonymity. The API origin is stored in sessionStorage for the current tab; query history is not persisted by the frontend.
 
 ### Optional page reader
 The browser sends a URL to the Node.js API. The server validates it, fetches an allowlisted HTTPS page, extracts a limited amount of text, and returns JSON. The server necessarily sees the requested URL and retrieved content while processing the request. Do not describe this flow as end-to-end encrypted: TLS protects connections in transit, but it does not hide data from the application server or the destination website.
@@ -14,7 +14,7 @@ The app does not persist page content by design. If persistence, accounts, saved
 
 ## 2. Encapsulation boundaries
 
-- index.html: static GitHub Pages UI and direct DuckDuckGo navigation in a separate tab.
+- index.html: static GitHub Pages UI that renders search results on the same page and calls a configured API origin.
 - web-proxy/index.html: Node-hosted UI variant with optional reader interaction.
 - server.mjs: HTTP API, input validation, outbound fetch policy, content extraction, and security headers.
 - package.json: explicit runtime and dependency boundary.
@@ -28,7 +28,7 @@ Keep secrets, host policy, and deployment settings out of browser JavaScript. Th
 ### Browser to deployment
 For production, serve the site and API over HTTPS with TLS 1.2 or newer (TLS 1.3 preferred). Use a managed platform or reverse proxy that correctly provisions and renews certificates. Redirect HTTP to HTTPS at the edge and enable HSTS only after confirming the whole intended hostname is HTTPS-capable. Do not commit private keys or certificates to the repository.
 
-GitHub Pages serves only the static homepage and does not run the Node API. Its HTTPS protects the static site delivery; the optional reader API needs a separate Node-capable host with HTTPS. The Pages workflow deploys only the root index.html. If the UI and API are hosted on different origins, configure a specific CORS allowlist and CSRF protections before enabling browser access; do not use wildcard CORS for a credentialed API.
+GitHub Pages serves only the static frontend and does not run the Node API or SearXNG. Its HTTPS protects the static site delivery; the API and metasearch backend need a separate Node/Docker-capable host with HTTPS. The Pages workflow deploys only the root index.html. If the UI and API are hosted on different origins, configure ALLOWED_ORIGINS with the exact UI origin; wildcard CORS is not used. The current API does not use browser cookies or credentials.
 
 ### Server to destination
 The reader permits HTTPS URLs only and validates every redirect against the host allowlist. TLS certificate validation should remain enabled; do not use insecure TLS flags or disable certificate verification. The reader's allowlist is a policy boundary, not a replacement for outbound network restrictions.
@@ -40,7 +40,7 @@ Do not add custom encryption around ordinary search requests: the browser must s
 
 The Node server uses Helmet for common security headers, including a Content Security Policy, no-sniff behavior, frame restrictions, and a no-referrer policy. The current UI uses inline scripts and styles, so the CSP allows inline script/style. A stronger future configuration should move these to external files or use per-response nonces/hashes before removing unsafe-inline.
 
-The reader endpoint has a per-IP rate limit of 20 requests per 15-minute window. This is a basic abuse control, not authentication and not a complete distributed denial-of-service defense. A production deployment should also use host-level request limits, concurrency caps, timeouts, monitoring, and authentication if the reader is not meant to be public.
+The reader endpoint has a per-IP rate limit of 20 requests per 15-minute window; the search endpoint has a limit of 40 requests per 15-minute window. These are basic abuse controls, not authentication and not a complete distributed denial-of-service defense. CORS is opt-in through exact ALLOWED_ORIGINS values and is not an access-control or authentication substitute. A production deployment should also use host-level request limits, concurrency caps, timeouts, monitoring, and authentication if the API is not meant to be public.
 
 TRUST_PROXY_HOPS defaults to 0. Only set it to the exact trusted proxy hop count after checking the hosting provider's proxy topology and ensuring client-supplied forwarding headers are overwritten. Incorrect proxy trust can make IP-based rate limits unreliable.
 
@@ -67,14 +67,17 @@ Before calling a deployment production-ready, verify:
 1. The actual public URL uses HTTPS and presents a valid certificate.
 2. HTTP redirects to HTTPS at the hosting edge.
 3. npm start succeeds after installing dependencies.
-4. /api/health returns expected configuration status.
-5. A host outside READER_ALLOWED_HOSTS is rejected.
-6. HTTP, local hostnames, IP-literal targets, disallowed ports, and redirects to disallowed hosts are rejected.
-7. Oversized or slow responses are stopped.
-8. The reader rate limit returns HTTP 429 after its configured threshold.
-9. Response headers include the expected Helmet security headers.
-10. GitHub Actions deployment succeeds and the deployed homepage matches the intended root index.html.
-11. Logs and repository history contain no secrets.
-12. Outbound egress policy blocks internal networks independently of the application.
+4. `/api/health` returns expected configuration status.
+5. `/api/search` rejects empty and overlong queries, rate limits requests, and returns normalized HTTP(S) result links.
+6. Cross-origin requests are rejected unless their Origin is explicitly allowed by `ALLOWED_ORIGINS`.
+7. SearXNG JSON output is enabled and the API can reach the configured `SEARXNG_URL`.
+8. A host outside `READER_ALLOWED_HOSTS` is rejected.
+9. HTTP, local hostnames, IP-literal targets, disallowed ports, and redirects to disallowed hosts are rejected.
+10. Oversized or slow responses are stopped.
+11. The reader rate limit returns HTTP 429 after its configured threshold.
+12. Response headers include the expected Helmet security headers.
+13. GitHub Actions deployment succeeds and the deployed homepage matches the intended root `index.html`.
+14. Logs and repository history contain no secrets.
+15. Outbound egress policy blocks internal networks independently of the application.
 
 These checks must be run against the actual deployment. A successful code commit alone does not prove deployment or security controls are active.

@@ -39,6 +39,26 @@ app.use(helmet({
   referrerPolicy: { policy: "no-referrer" },
   crossOriginEmbedderPolicy: false
 }));
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",").map(s => s.trim()).filter(Boolean);
+
+// Cross-origin API access is opt-in for a GitHub Pages frontend.
+app.use((req, res, next) => {
+  const origin = req.get("origin");
+  if (origin) {
+    if (!allowedOrigins.includes(origin) && origin !== `http://localhost:${PORT}` && origin !== `http://127.0.0.1:${PORT}`) {
+      return res.status(403).json({ error: "This website origin is not allowed to use the API." });
+    }
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Max-Age", "600");
+    if (req.method === "OPTIONS") return res.status(204).end();
+  }
+  next();
+});
+
 app.use(express.json({ limit: "16kb", strict: true }));
 app.use(express.static(path.join(__dirname, "web-proxy"), {
   etag: true, maxAge: "5m", index: "index.html"
@@ -168,6 +188,76 @@ function extractReadable(body, contentType) {
   });
   return { title, description: description.slice(0, 500), text, links };
 }
+
+const searchLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 40,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many searches. Please wait before trying again." }
+});
+
+app.get("/api/search", searchLimiter, async (req, res) => {
+  const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
+  if (!query || query.length > 300) {
+    return res.status(400).json({ error: "Enter a search query of 1–300 characters." });
+  }
+  const base = process.env.SEARXNG_URL || "";
+  if (!base) {
+    return res.status(503).json({ error: "Search backend is not configured. Set SEARXNG_URL to your SearXNG instance." });
+  }
+  let endpoint;
+  try {
+    endpoint = new URL("/search", base);
+    if (endpoint.protocol !== "https:" && endpoint.hostname !== "searxng" && endpoint.hostname !== "localhost" && endpoint.hostname !== "127.0.0.1") {
+      throw new Error("Search backend must use HTTPS outside a private deployment network.");
+    }
+  } catch {
+    return res.status(503).json({ error: "SEARXNG_URL must be a valid HTTPS URL (or a private Docker/local URL)." });
+  }
+  endpoint.searchParams.set("q", query);
+  endpoint.searchParams.set("format", "json");
+  endpoint.searchParams.set("language", "all");
+  endpoint.searchParams.set("safesearch", "1");
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 9000);
+  try {
+    const response = await fetch(endpoint, {
+      headers: { "Accept": "application/json", "User-Agent": "AssassinSearch/1.0" },
+      signal: controller.signal,
+      redirect: "error"
+    });
+    if (!response.ok) {
+      return res.status(502).json({ error: "Search provider returned HTTP " + response.status + "." });
+    }
+    const type = (response.headers.get("content-type") || "").toLowerCase();
+    if (!type.includes("application/json")) {
+      return res.status(502).json({ error: "Search provider did not return JSON. Enable the JSON format in SearXNG." });
+    }
+    const data = await response.json();
+    const results = Array.isArray(data.results) ? data.results.slice(0, 20).flatMap(item => {
+      if (!item || typeof item.url !== "string" || typeof item.title !== "string") return [];
+      let target;
+      try { target = new URL(item.url); } catch { return []; }
+      if (target.protocol !== "https:" && target.protocol !== "http:") return [];
+      return [{
+        title: item.title.slice(0, 300),
+        url: target.href,
+        snippet: typeof item.content === "string" ? item.content.slice(0, 1200) : "",
+        engine: typeof item.engine === "string" ? item.engine.slice(0, 80) : ""
+      }];
+    }) : [];
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({ query, results, count: results.length });
+  } catch (error) {
+    const message = error.name === "AbortError"
+      ? "Search timed out. Please try again."
+      : "Could not reach the configured search backend.";
+    return res.status(502).json({ error: message });
+  } finally {
+    clearTimeout(timer);
+  }
+});
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, readerConfigured: allowedHosts.length > 0 }));
 

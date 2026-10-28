@@ -1,0 +1,12 @@
+use_default_settings: true
+
+server:
+  # The deployment must provide SEARXNG_SECRET as an environment variable.
+  limiter: false # Internal-only service; the public API enforces rate limits.
+  image_proxy: false
+
+search:
+  safe_search: 1
+  formats:
+    - html
+    - json

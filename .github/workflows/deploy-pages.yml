@@ -1,6 +1,11 @@
-name: Deploy and verify DuckDuckGo search homepage
+name: Deploy and verify Assassin Search frontend
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - ".github/workflows/deploy-pages.yml"
   push:
     branches: [main]
     paths:
@@ -23,23 +28,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Verify static DuckDuckGo search form
+      - name: Verify same-page metasearch frontend
         run: |
           python3 - <<'PY'
           from pathlib import Path
           html = Path("index.html").read_text(encoding="utf-8")
           checks = {
-              "DuckDuckGo HTTPS action": 'action="https://duckduckgo.com/"' in html,
-              "GET search method": 'method="get"' in html,
-              "query parameter name": 'name="q"' in html,
-              "same-tab navigation": 'target="_self"' in html,
-              "same-tab search form": 'target="_self"' in html,
-              "no API dependency in static page": "/api/read" not in html and "/api/health" not in html,
+              "search form stays on this page": 'id="searchForm"' in html and "event.preventDefault()" in html,
+              "backend search endpoint used": '"/api/search"' in html,
+              "no direct navigation to DuckDuckGo": 'action="https://duckduckgo.com/"' not in html,
+              "results rendered as text": "textContent" in html,
+              "no query or result HTML injection": "innerHTML" not in html,
+              "external links protected": 'rel = "noopener noreferrer"' in html,
           }
           for name, passed in checks.items():
               print(f'{"PASS" if passed else "FAIL"}: {name}')
           if not all(checks.values()):
-              raise SystemExit("DuckDuckGo homepage verification failed.")
+              raise SystemExit("Assassin Search frontend verification failed.")
           PY
       - name: Prepare static site
         run: |
@@ -51,6 +56,7 @@ jobs:
           path: dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
