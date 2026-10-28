@@ -1,92 +1,97 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Web Gateway</title>
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      max-width: 680px;
-      margin: 12vh auto;
-      padding: 24px;
-      background: #111827;
-      color: white;
-    }
-    input, button {
-      box-sizing: border-box;
-      padding: 12px;
-      font: inherit;
-      border-radius: 8px;
-    }
-    input { width: 75%; }
-    button { cursor: pointer; }
-    iframe {
-      width: 100%;
-      height: 55vh;
-      margin-top: 24px;
-      background: white;
-      border: 0;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Brave Search · Reader</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9edf5;background:#0b1020;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
+header{max-width:1080px;margin:auto;padding:26px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.03em;font-size:19px}.logo{width:35px;height:35px;border-radius:12px;background:#fb542b;display:grid;place-items:center;color:#fff;font-size:21px;box-shadow:0 7px 22px #fb542b38}
+.pill{border:1px solid #ffffff20;border-radius:999px;padding:7px 11px;color:#aeb9d0;font-size:12px}
+main{max-width:900px;margin:6vh auto 80px;padding:0 22px}.hero{text-align:center;margin-bottom:34px}.hero h1{font-size:clamp(35px,6vw,56px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}.hero h1 span{color:#ff704d}.hero p{color:#aab5ca;margin:0;font-size:16px}
+.tabs{display:flex;gap:8px;justify-content:center;margin:26px 0 18px}.tab{background:transparent;color:#b9c3d8;border:1px solid #ffffff1d;border-radius:999px;padding:10px 17px;cursor:pointer;font:inherit}.tab.active{background:#ffffff12;border-color:#ff704d;color:white}
+.searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004}.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:12px 13px;font:inherit;font-size:16px}.searchbar input::placeholder{color:#7887a2}
+button.primary{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 19px;font:600 14px inherit;cursor:pointer;white-space:nowrap}button:disabled{opacity:.55;cursor:wait}
+.hint{color:#7e8ba4;font-size:12px;text-align:center;margin:13px 0 25px}
+#status{min-height:22px;color:#ffb39e;font-size:13px;margin:14px 2px}
+.results{display:grid;gap:12px}.result{padding:19px 20px;border:1px solid #ffffff14;border-radius:16px;background:#11192b}.result h3{font-size:17px;font-weight:650;margin:0 0 8px;line-height:1.4}.result a{color:#91baff;text-decoration:none}.result a:hover{text-decoration:underline}.url{font-size:12px;color:#7f91ad;overflow-wrap:anywhere;margin-bottom:8px}.result p{margin:0;color:#c0c9da;line-height:1.6;font-size:14px}.read-layout{display:none;gap:18px}.reader-card{border:1px solid #ffffff17;background:#11192b;border-radius:17px;padding:22px}.reader-card h2{margin:0 0 7px;font-size:23px;letter-spacing:-.025em}.reader-card .url{margin-bottom:16px}.reader-text{white-space:pre-wrap;line-height:1.8;color:#d0d7e5;overflow-wrap:anywhere;font-size:15px}.links{border-top:1px solid #ffffff18;margin-top:20px;padding-top:16px}.links a{display:block;color:#91baff;margin:9px 0;overflow-wrap:anywhere;font-size:13px}
+footer{max-width:900px;margin:0 auto;padding:0 22px 34px;color:#66748e;font-size:12px;text-align:center;line-height:1.7}
+@media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:4vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.hero p{font-size:14px}.result{padding:16px}}
+</style>
 </head>
 <body>
-  <h1>Web Gateway</h1>
-  <p>Browse an authorized destination.</p>
-
-  <form id="browse">
-    <input id="url" type="url"
-      placeholder="https://example.com"
-      required>
-    <button>Open</button>
-  </form>
-
-  <p id="status" role="status"></p>
-  <iframe id="viewer" title="Website preview"></iframe>
-
-  <script>
-    const WORKER_URL = "https://web-proxy.callanlyons10.workers.dev/";
-
-    document.querySelector("#browse").addEventListener(
-      "submit", async (event) => {
-        event.preventDefault();
-
-        const target = document.querySelector("#url").value;
-        const status = document.querySelector("#status");
-
-        try {
-          const parsed = new URL(target);
-          if (parsed.protocol !== "https:") {
-            throw new Error("Use an HTTPS URL.");
-          }
-
-          const endpoint = new URL("/fetch", WORKER_URL);
-          endpoint.searchParams.set("url", parsed.href);
-
-          status.textContent = "Loading…";
-
-          const response = await fetch(endpoint);
-          if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-          }
-
-          const type = response.headers.get("Content-Type") || "";
-          if (!type.includes("text/html")) {
-            throw new Error("This destination did not return HTML.");
-          }
-
-          const html = await response.text();
-          const viewer = document.querySelector("#viewer");
-
-          viewer.srcdoc = html;
-          status.textContent =
-            "Page received. Some websites may not render in a preview.";
-        } catch (error) {
-          status.textContent = error.message;
-        }
-      }
-    );
-  </script>
+<header><div class="brand"><span class="logo">✦</span> Search & Reader</div><span class="pill">Brave Search API · Public pages</span></header>
+<main>
+<section class="hero">
+<h1>Find it. <span>Read it.</span></h1>
+<p>A focused search homepage with a clean, text-first public-page reader.</p>
+<div class="tabs" role="tablist" aria-label="Mode">
+<button class="tab active" id="searchTab" role="tab" aria-selected="true">Search the web</button>
+<button class="tab" id="readerTab" role="tab" aria-selected="false">Read a page</button>
+</div>
+<form class="searchbar" id="searchForm"><input id="query" aria-label="Search query" placeholder="Search anything with Brave…" autocomplete="off" required><button class="primary" id="searchButton">Search ↗</button></form>
+<form class="searchbar" id="readerForm" style="display:none"><input id="pageUrl" aria-label="Page URL" type="url" placeholder="https://example.com/article" autocomplete="url" required><button class="primary" id="readButton">Read page ↗</button></form>
+<div class="hint" id="hint">Search results are provided by Brave. Search requires a server-side API key.</div>
+<div id="status" role="status" aria-live="polite"></div>
+</section>
+<section id="results" class="results" aria-label="Search results"></section>
+<section id="readLayout" class="read-layout" aria-label="Readable page">
+<article class="reader-card"><h2 id="pageTitle">Page</h2><div id="pageSource" class="url"></div><p id="pageDescription" style="color:#aab5ca;line-height:1.6"></p><div id="pageText" class="reader-text"></div><div class="links"><strong>Links on this page</strong><div id="pageLinks"></div></div></article>
+</section>
+</main>
+<footer>Reader safety: HTTPS only, server-configured host allowlist, private-network address checks, limited redirects and response size. Page scripts are not run.</footer>
+<script>
+const $ = (s) => document.querySelector(s);
+const searchTab = $("#searchTab"), readerTab = $("#readerTab");
+function setMode(mode) {
+  const searching = mode === "search";
+  searchTab.classList.toggle("active", searching); readerTab.classList.toggle("active", !searching);
+  searchTab.setAttribute("aria-selected", String(searching)); readerTab.setAttribute("aria-selected", String(!searching));
+  $("#searchForm").style.display = searching ? "flex" : "none";
+  $("#readerForm").style.display = searching ? "none" : "flex";
+  $("#hint").textContent = searching ? "Search results are provided by Brave. Search requires a server-side API key." : "Reads text from allowlisted public pages only. No scripts, cookies, or interactive page content are loaded.";
+  $("#status").textContent = ""; $("#results").replaceChildren(); $("#readLayout").style.display = "none";
+}
+searchTab.addEventListener("click", () => setMode("search"));
+readerTab.addEventListener("click", () => setMode("reader"));
+function setStatus(message) { $("#status").textContent = message; }
+function el(tag, cls, value) { const n = document.createElement(tag); if (cls) n.className = cls; if (value !== undefined) n.textContent = value; return n; }
+$("#searchForm").addEventListener("submit", async event => {
+  event.preventDefault(); const q = $("#query").value.trim(); if (!q) return;
+  $("#searchButton").disabled = true; $("#results").replaceChildren(); $("#readLayout").style.display = "none"; setStatus("Searching…");
+  try {
+    const response = await fetch("/api/search?q=" + encodeURIComponent(q));
+    const data = await response.json(); if (!response.ok) throw new Error(data.error || "Search failed.");
+    if (!data.results.length) { setStatus("No results found."); return; }
+    setStatus("Showing " + data.results.length + " results.");
+    for (const item of data.results) {
+      const card = el("article", "result"), title = el("h3"), link = el("a", "", item.title || item.url);
+      link.href = item.url; link.target = "_blank"; link.rel = "noopener noreferrer"; title.append(link);
+      card.append(title, el("div", "url", item.url), el("p", "", item.description)); $("#results").append(card);
+    }
+  } catch (error) { setStatus(error.message); }
+  finally { $("#searchButton").disabled = false; }
+});
+$("#readerForm").addEventListener("submit", async event => {
+  event.preventDefault(); const url = $("#pageUrl").value.trim(); if (!url) return;
+  $("#readButton").disabled = true; $("#results").replaceChildren(); $("#readLayout").style.display = "none"; setStatus("Fetching and extracting readable text…");
+  try {
+    const response = await fetch("/api/read", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+    const data = await response.json(); if (!response.ok) throw new Error(data.error || "Could not read page.");
+    const page = data.page || {};
+    $("#pageTitle").textContent = page.title || "Readable page";
+    $("#pageSource").textContent = data.url;
+    $("#pageDescription").textContent = page.description || "";
+    $("#pageText").textContent = page.text || "No readable text was found.";
+    const links = $("#pageLinks"); links.replaceChildren();
+    for (const item of page.links || []) { const a = el("a", "", item.label + " ↗"); a.href = item.url; a.target = "_blank"; a.rel = "noopener noreferrer"; links.append(a); }
+    $("#readLayout").style.display = "grid"; setStatus("Page extracted as plain text. Page scripts were not executed.");
+  } catch (error) { setStatus(error.message); }
+  finally { $("#readButton").disabled = false; }
+});
+</script>
 </body>
 </html>
