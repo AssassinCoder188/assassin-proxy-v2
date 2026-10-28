@@ -1,6 +1,6 @@
 # assassin-proxy-v2 — DuckDuckGo & Reader
 
-A small Node.js app with a DuckDuckGo search homepage and a text-first reader for explicitly allowlisted public HTTPS pages.
+A DuckDuckGo search homepage that works without a search API key, plus an optional Node.js text reader for explicitly allowlisted public HTTPS pages.
 
 ## Requirements
 
@@ -40,4 +40,10 @@ Open http://localhost:3000. Searches navigate directly to DuckDuckGo using your 
 
 ## Deploy
 
-Deploy to a Node.js 20+ host that supports outbound HTTPS. Configure `READER_ALLOWED_HOSTS` as a server environment variable if you want the reader. No search provider key is needed.
+### Static search homepage (GitHub Pages)
+
+The root `index.html` is a standalone search homepage. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, select `main` and `/(root)`, then save. Once GitHub Pages finishes publishing, use the Pages URL shown in that settings screen. The search form submits directly to `https://duckduckgo.com/?q=...`; it does not need Node.js, a backend, or an API key. The optional reader tab is hidden on static hosting because `/api/read` requires the Node server.
+
+### Full app with the optional reader
+
+Deploy to a Node.js 20+ host that supports outbound HTTPS and runs `npm start`. Set `READER_ALLOWED_HOSTS` as a server environment variable for the reader. No search provider key is needed.
