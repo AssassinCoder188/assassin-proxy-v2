@@ -42,7 +42,7 @@ Open http://localhost:3000. Searches navigate directly to DuckDuckGo using your 
 
 ### Static search homepage (GitHub Pages)
 
-The root `index.html` is a standalone search homepage. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, select `main` and `/(root)`, then save. Once GitHub Pages finishes publishing, use the Pages URL shown in that settings screen. The search form submits directly to `https://duckduckgo.com/?q=...`; it does not need Node.js, a backend, or an API key. The optional reader tab is hidden on static hosting because `/api/read` requires the Node server.
+The root `index.html` is a standalone search homepage. In GitHub, open **Settings → Pages** and set **Build and deployment → Source** to **GitHub Actions**. The workflow at `.github/workflows/deploy-pages.yml` publishes the root `index.html` whenever it changes on `main`. Open the **Actions** tab and check that **Deploy DuckDuckGo search homepage** succeeds, then use the Pages URL shown in **Settings → Pages**. The search form submits directly to `https://duckduckgo.com/?q=...`; it does not need Node.js, a backend, or an API key. The optional reader tab is hidden on static hosting because `/api/read` requires the Node server.
 
 ### Full app with the optional reader
 
