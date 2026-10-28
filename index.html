@@ -43,12 +43,12 @@ footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size
 <main>
   <section class="hero" aria-labelledby="title">
     <h1 id="title">Search on your terms<span>.</span></h1>
-    <p class="lead">A simple search launch page. Your query is sent directly to DuckDuckGo in a separate tab, while this homepage stays open.</p>
-    <form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get" target="_blank" rel="noopener noreferrer">
+    <p class="lead">A simple search launch page. Your query is sent directly to DuckDuckGo in this same tab.</p>
+    <form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get" target="_self">
       <input id="query" name="q" type="search" aria-label="Search DuckDuckGo" placeholder="What would you like to search?" autocomplete="off" required>
       <button type="submit">Search DuckDuckGo ↗</button>
     </form>
-    <p class="hint">Searches are not saved by this page. DuckDuckGo receives the query, and your browser may keep normal history for the new tab.</p>
+    <p class="hint">This page does not save searches. DuckDuckGo receives the query, and your browser may keep a normal history entry for the results page.</p>
   </section>
   <section class="info" aria-label="How it works">
     <article class="card">
@@ -56,8 +56,8 @@ footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size
       <p>The form uses DuckDuckGo's HTTPS search URL and the standard <code>q</code> query parameter. No API key, search proxy, or backend is needed.</p>
     </article>
     <article class="card">
-      <h2>Separate tab, not a separate browser</h2>
-      <p>Search results open in a new tab so this site remains open. A website cannot create a separate browser profile or guarantee isolation from your computer's browser history. For stronger local separation, use a separate browser profile or a private window.</p>
+      <h2>Same tab, not a separate device</h2>
+      <p>Search results replace this page in the same tab. This static site cannot create a separate browser profile or isolate activity from your device's browser history, extensions, operating system, or network. For stronger local separation, use a separate browser profile or a private window.</p>
     </article>
     <article class="card">
       <h2>No search history stored here</h2>
@@ -69,6 +69,6 @@ footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size
     </article>
   </section>
 </main>
-<footer>Hosted as a static GitHub Pages site. HTTPS protects the connection, but this page does not provide anonymity or isolate browser-level history.</footer>
+<footer>Hosted as a static GitHub Pages site. Searches navigate in the same tab. HTTPS protects the connection, but this page does not isolate activity from your device or provide anonymity.</footer>
 </body>
 </html>
