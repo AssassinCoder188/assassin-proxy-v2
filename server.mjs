@@ -7,7 +7,6 @@ import * as cheerio from "cheerio";
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
-const BRAVE_API_KEY = process.env.BRAVE_API_KEY || "";
 const MAX_BYTES = 1_500_000;
 const TIMEOUT_MS = 10_000;
 const MAX_REDIRECTS = 4;
@@ -153,34 +152,7 @@ function extractReadable(body, contentType) {
   return { title, description: description.slice(0, 500), text, links };
 }
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, searchConfigured: Boolean(BRAVE_API_KEY), readerConfigured: allowedHosts.length > 0 }));
-
-app.get("/api/search", async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 300);
-  if (!q) return res.status(400).json({ error: "Enter a search query." });
-  if (!BRAVE_API_KEY) return res.status(503).json({ error: "Search is not configured. Set BRAVE_API_KEY on the server." });
-  try {
-    const endpoint = new URL("https://api.search.brave.com/res/v1/web/search");
-    endpoint.searchParams.set("q", q);
-    endpoint.searchParams.set("count", "10");
-    const upstream = await fetch(endpoint, {
-      headers: { "Accept": "application/json", "X-Subscription-Token": BRAVE_API_KEY },
-      signal: AbortSignal.timeout(TIMEOUT_MS)
-    });
-    if (!upstream.ok) return res.status(502).json({ error: "Brave Search returned HTTP " + upstream.status + "." });
-    const data = await upstream.json();
-    const results = (data.web?.results || []).slice(0, 10).map(item => ({
-      title: String(item.title || "").slice(0, 300),
-      url: String(item.url || ""),
-      description: String(item.description || "").slice(0, 700)
-    })).filter(item => {
-      try { return new URL(item.url).protocol === "https:"; } catch { return false; }
-    });
-    res.json({ query: q, results });
-  } catch {
-    res.status(502).json({ error: "Search request failed. Please try again." });
-  }
-});
+app.get("/api/health", (_req, res) => res.json({ ok: true, readerConfigured: allowedHosts.length > 0 }));
 
 app.post("/api/read", async (req, res) => {
   const raw = typeof req.body?.url === "string" ? req.body.url.slice(0, 2048) : "";
@@ -194,7 +166,6 @@ app.post("/api/read", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Brave Search + public-page reader listening on http://localhost:" + PORT);
-  if (!BRAVE_API_KEY) console.warn("Set BRAVE_API_KEY to enable search.");
+  console.log("DuckDuckGo homepage + public-page reader listening on http://localhost:" + PORT);
   if (!allowedHosts.length) console.warn("Reader disabled until READER_ALLOWED_HOSTS is configured.");
 });
