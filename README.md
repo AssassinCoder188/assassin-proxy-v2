@@ -1,6 +1,6 @@
 # assassin-proxy-v2 — DuckDuckGo Search
 
-A static GitHub Pages search homepage. Searches are submitted directly to DuckDuckGo over HTTPS in a new tab. No search API key, Node.js server, search proxy, or database is needed for the Pages site.
+A static GitHub Pages search homepage. Searches are submitted directly to DuckDuckGo over HTTPS in the same tab. No search API key, Node.js server, search proxy, or database is needed for the Pages site.
 
 ## GitHub Pages deployment
 
@@ -14,7 +14,7 @@ The workflow checks the search form's destination, HTTP method, query parameter,
 ## How search and separation work
 
 - The form submits to `https://duckduckgo.com/?q=...` using the standard `q` parameter.
-- Results open in a separate tab, leaving the GitHub Pages homepage open.
+- Results replace the homepage in the same tab.
 - This site does not store search history, use cookies or local storage, or send search queries to a project backend.
 - DuckDuckGo receives the search query and normal connection metadata. Your browser may keep a history entry for the results tab.
 - A website cannot create an isolated browser profile or prevent the operating system, browser, extensions, or network from observing their normal activity. For stronger local separation, open the Pages site in a separate browser profile or private window.
