@@ -130,7 +130,7 @@ async function fetchPublicPage(raw) {
 }
 
 function extractReadable(body, contentType) {
-  if (contentType.includes("text/plain")) return body.slice(0, 60_000);
+  if (contentType.includes("text/plain")) return { title: "Plain-text page", description: "", text: body.slice(0, 60_000), links: [] };
   const $ = cheerio.load(body);
   $("script, style, noscript, iframe, frame, object, embed, svg, canvas, form, nav, footer, header, aside").remove();
   const title = $("title").first().text().trim();
