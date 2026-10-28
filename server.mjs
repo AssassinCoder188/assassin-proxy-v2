@@ -174,7 +174,7 @@ app.get("/api/health", (_req, res) => res.json({ ok: true, readerConfigured: all
 const readLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
-  standardHeaders: "draft-8",
+  standardHeaders: true,
   legacyHeaders: false,
   message: { error: "Too many reader requests. Please wait before trying again." }
 });
