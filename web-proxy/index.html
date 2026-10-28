@@ -32,7 +32,7 @@ footer{max-width:900px;margin:0 auto;padding:0 22px 34px;color:#66748e;font-size
 <button class="tab active" id="searchTab" role="tab" aria-selected="true">Search the web</button>
 <button class="tab" id="readerTab" role="tab" aria-selected="false">Read a page</button>
 </div>
-<form class="searchbar" id="searchForm"><input id="query" aria-label="Search query" placeholder="Search the web with DuckDuckGo…" autocomplete="off" required><button class="primary" id="searchButton">Search ↗</button></form>
+<form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get"><input id="query" name="q" aria-label="Search query" placeholder="Search the web with DuckDuckGo…" autocomplete="off" required><button class="primary" id="searchButton" type="submit">Search ↗</button></form>
 <form class="searchbar" id="readerForm" style="display:none"><input id="pageUrl" aria-label="Page URL" type="url" placeholder="https://example.com/article" autocomplete="url" required><button class="primary" id="readButton">Read page ↗</button></form>
 <div class="hint" id="hint">Search opens DuckDuckGo directly. No search API key required.</div>
 <div id="status" role="status" aria-live="polite"></div>
@@ -57,6 +57,11 @@ function setMode(mode) {
 }
 searchTab.addEventListener("click", () => setMode("search"));
 readerTab.addEventListener("click", () => setMode("reader"));
+// On static hosting (for example GitHub Pages), the search form works without a backend.
+// Hide the optional reader tab when the Node API is not present.
+fetch("/api/health", { headers: { "Accept": "application/json" } })
+  .then(response => { if (!response.ok) throw new Error("No reader API"); return response.json(); })
+  .catch(() => { readerTab.hidden = true; setMode("search"); });
 function setStatus(message) { $("#status").textContent = message; }
 function el(tag, cls, value) { const n = document.createElement(tag); if (cls) n.className = cls; if (value !== undefined) n.textContent = value; return n; }
 $("#searchForm").addEventListener("submit", event => {
