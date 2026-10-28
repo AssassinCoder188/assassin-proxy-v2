@@ -13,7 +13,7 @@ header{max-width:1080px;margin:auto;padding:24px;display:flex;align-items:center
 main{max-width:850px;margin:7vh auto 70px;padding:0 22px}.hero{text-align:center;margin-bottom:28px}h1{font-size:clamp(35px,6vw,58px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}h1 span{color:#ff704d}.lead{color:#aab5ca;margin:0 auto;font-size:16px;line-height:1.7;max-width:620px}
 .searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004;margin:26px 0 0}.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:13px;font:inherit;font-size:16px}.searchbar input::placeholder{color:#7887a2}button{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 20px;font:600 15px inherit;cursor:pointer;white-space:nowrap}button:hover{background:#ed4f2b}button:disabled{opacity:.6;cursor:wait}
 .hint{color:#7e8ba4;font-size:12px;text-align:center;margin:14px 0 0;line-height:1.7}.settings{margin:22px 0 18px;padding:16px;border:1px solid #ffffff17;border-radius:14px;background:#11192b}.settings summary{cursor:pointer;color:#c6d0e2;font-size:13px;font-weight:650}.settings p{color:#9eabc2;font-size:12px;line-height:1.6}.config{display:flex;gap:8px;margin-top:12px}.config input{flex:1;min-width:0;background:#0b1020;color:#edf1fa;border:1px solid #ffffff25;border-radius:9px;padding:10px;font:inherit;font-size:13px}.config button{font-size:12px;padding:9px 12px}
-#status{min-height:22px;color:#ffb39e;font-size:13px;margin:14px 2px}.results{display:grid;gap:12px}.result{padding:19px 20px;border:1px solid #ffffff14;border-radius:16px;background:#11192b}.result h2{font-size:17px;font-weight:650;margin:0 0 8px;line-height:1.4}.result a{color:#91baff;text-decoration:none}.result a:hover{text-decoration:underline}.url{font-size:12px;color:#7f91ad;overflow-wrap:anywhere;margin-bottom:8px}.result p{margin:0;color:#c0c9da;line-height:1.6;font-size:14px}.result .source{font-size:11px;color:#7f91ad;margin-top:10px}.empty{padding:26px;text-align:center;color:#9eabc2;border:1px dashed #ffffff25;border-radius:14px;line-height:1.7}
+#status{min-height:22px;color:#ffb39e;font-size:13px;margin:14px 2px}.results{display:grid;gap:12px}.result{padding:19px 20px;border:1px solid #ffffff14;border-radius:16px;background:#11192b}.result h2{font-size:17px;font-weight:650;margin:0 0 8px;line-height:1.4}.result a{color:#91baff;text-decoration:none}.result a:hover{text-decoration:underline}.url{font-size:12px;color:#7f91ad;overflow-wrap:anywhere;margin-bottom:8px}.result p{margin:0;color:#c0c9da;line-height:1.6;font-size:14px}.result .source{font-size:11px;color:#7f91ad;margin-top:10px}.result-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.result-actions button{font-size:12px;padding:8px 11px}.secondary{background:#25324c;color:#d7e2f5;border:1px solid #ffffff20}.reader{display:none;margin-top:24px;padding:22px;border:1px solid #ffffff20;border-radius:16px;background:#10192b}.reader h2{margin:12px 0 8px;font-size:23px}.reader .reader-text{white-space:pre-wrap;overflow-wrap:anywhere;color:#d0d7e5;line-height:1.8;font-size:14px}.reader .reader-links{margin-top:18px;border-top:1px solid #ffffff20;padding-top:12px}.reader .reader-links a{display:block;color:#91baff;margin:8px 0;overflow-wrap:anywhere;font-size:13px}.empty{padding:26px;text-align:center;color:#9eabc2;border:1px dashed #ffffff25;border-radius:14px;line-height:1.7}
 .info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:32px}.card{padding:18px;border:1px solid #ffffff16;border-radius:16px;background:#11192b}.card h2{font-size:14px;margin:0 0 8px}.card p{font-size:12px;line-height:1.7;color:#aab5ca;margin:0}footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size:12px;text-align:center;line-height:1.8}
 @media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:5vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.lead{font-size:14px}.info{grid-template-columns:1fr}.config{flex-wrap:wrap}.config input{flex-basis:100%}.result{padding:16px}}
 </style>
@@ -35,6 +35,7 @@ main{max-width:850px;margin:7vh auto 70px;padding:0 22px}.hero{text-align:center
 </details>
 <div id="status" role="status" aria-live="polite"></div>
 <section id="results" class="results" aria-label="Search results"></section>
+<section id="reader" class="reader" aria-label="In-page reader"><button type="button" class="secondary" id="closeReader">Close reader</button><h2 id="readerTitle">Readable page</h2><div class="url" id="readerUrl"></div><p id="readerDescription" style="color:#aab5ca;line-height:1.6"></p><div class="reader-text" id="readerText"></div><div class="reader-links"><strong>Links in this page</strong><div id="readerLinks"></div></div></section>
 <section class="info" aria-label="How it works">
 <article class="card"><h2>Full results need a backend</h2><p>GitHub Pages hosts this interface only. The separate Node.js API queries a configured SearXNG metasearch instance; it does not scrape DuckDuckGo's private endpoints.</p></article>
 <article class="card"><h2>Privacy boundaries</h2><p>The API receives your query. The metasearch instance and its upstream engines may also receive it. HTTPS protects data in transit, but this is not anonymity or a separate browser profile.</p></article>
@@ -45,6 +46,7 @@ main{max-width:850px;margin:7vh auto 70px;padding:0 22px}.hero{text-align:center
 const $ = s => document.querySelector(s);
 const form = $("#searchForm"), query = $("#query"), results = $("#results"), status = $("#status"), searchButton = $("#searchButton");
 const apiInput = $("#apiBase"), apiState = $("#apiState");
+const reader = $("#reader");
 let apiBase = "";
 try { apiBase = sessionStorage.getItem("assassinSearchApi") || ""; } catch {}
 apiInput.value = apiBase;
@@ -70,6 +72,39 @@ $("#clearApi").addEventListener("click", () => {
   results.replaceChildren(); status.textContent = "";
 });
 function addText(tag, cls, value) { const node = document.createElement(tag); if (cls) node.className = cls; node.textContent = value || ""; return node; }
+async function openReader(url, button) {
+  if (!apiBase) return;
+  button.disabled = true;
+  status.textContent = "Loading a safe text preview…";
+  reader.style.display = "none";
+  try {
+    const response = await fetch(new URL("/api/read", apiBase), {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      mode: "cors", credentials: "omit",
+      body: JSON.stringify({ url })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "This page could not be read.");
+    const page = data.page || {};
+    $("#readerTitle").textContent = page.title || "Readable page";
+    $("#readerUrl").textContent = data.url || url;
+    $("#readerDescription").textContent = page.description || "";
+    $("#readerText").textContent = page.text || "No readable text was found.";
+    const links = $("#readerLinks"); links.replaceChildren();
+    for (const item of page.links || []) {
+      const href = safeHttpUrl(item.url); if (!href) continue;
+      const link = addText("a", "", item.label + " ↗");
+      link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; links.append(link);
+    }
+    reader.style.display = "block";
+    reader.scrollIntoView({ behavior: "smooth", block: "start" });
+    status.textContent = "Showing a text-only preview. Scripts, forms, and interactive website features are not loaded.";
+  } catch (error) {
+    status.textContent = error.message || "Could not read this page.";
+  } finally { button.disabled = false; }
+}
+$("#closeReader").addEventListener("click", () => { reader.style.display = "none"; });
 function safeHttpUrl(value) {
   try { const u = new URL(value); return (u.protocol === "https:" || u.protocol === "http:") ? u.href : ""; } catch { return ""; }
 }
@@ -83,7 +118,7 @@ form.addEventListener("submit", async event => {
     status.textContent = "Search backend not configured.";
     return;
   }
-  searchButton.disabled = true; results.replaceChildren(); status.textContent = "Searching…";
+  searchButton.disabled = true; results.replaceChildren(); reader.style.display = "none"; status.textContent = "Searching…";
   try {
     const endpoint = new URL("/api/search", apiBase);
     endpoint.searchParams.set("q", q);
@@ -105,6 +140,12 @@ form.addEventListener("submit", async event => {
       card.append(heading, addText("div", "url", new URL(href).hostname + new URL(href).pathname));
       if (typeof item.snippet === "string" && item.snippet) card.append(addText("p", "", item.snippet));
       if (item.engine) card.append(addText("div", "source", "Source engine: " + item.engine));
+      const actions = addText("div", "result-actions", "");
+      const readButton = addText("button", "secondary", "Read here");
+      readButton.type = "button";
+      readButton.addEventListener("click", () => openReader(href, readButton));
+      actions.append(readButton);
+      card.append(actions);
       results.append(card);
     }
     status.textContent = "Search complete · " + results.children.length + " results. Result links open in a new tab when selected.";
