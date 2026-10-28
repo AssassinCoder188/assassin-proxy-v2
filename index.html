@@ -2,93 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>DuckDuckGo · Reader</title>
+<meta name="referrer" content="no-referrer">
+<title>DuckDuckGo Search | Private-by-design launch page</title>
 <style>
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9edf5;background:#0b1020;font-synthesis:none}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#edf1fa;background:#0b1020;font-synthesis:none}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#253866 0,transparent 48%),#0b1020}
 header{max-width:1080px;margin:auto;padding:26px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.03em;font-size:19px}.logo{width:35px;height:35px;border-radius:12px;background:#fb542b;display:grid;place-items:center;color:#fff;font-size:21px;box-shadow:0 7px 22px #fb542b38}
+.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:-.03em;font-size:19px}
+.logo{width:35px;height:35px;border-radius:12px;background:#fb542b;display:grid;place-items:center;color:#fff;font-size:21px;box-shadow:0 7px 22px #fb542b38}
 .pill{border:1px solid #ffffff20;border-radius:999px;padding:7px 11px;color:#aeb9d0;font-size:12px}
-main{max-width:900px;margin:6vh auto 80px;padding:0 22px}.hero{text-align:center;margin-bottom:34px}.hero h1{font-size:clamp(35px,6vw,56px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}.hero h1 span{color:#ff704d}.hero p{color:#aab5ca;margin:0;font-size:16px}
-.tabs{display:flex;gap:8px;justify-content:center;margin:26px 0 18px}.tab{background:transparent;color:#b9c3d8;border:1px solid #ffffff1d;border-radius:999px;padding:10px 17px;cursor:pointer;font:inherit}.tab.active{background:#ffffff12;border-color:#ff704d;color:white}
-.searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004}.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:12px 13px;font:inherit;font-size:16px}.searchbar input::placeholder{color:#7887a2}
-button.primary{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 19px;font:600 14px inherit;cursor:pointer;white-space:nowrap}button:disabled{opacity:.55;cursor:wait}
-.hint{color:#7e8ba4;font-size:12px;text-align:center;margin:13px 0 25px}
-#status{min-height:22px;color:#ffb39e;font-size:13px;margin:14px 2px}
-.results{display:grid;gap:12px}.result{padding:19px 20px;border:1px solid #ffffff14;border-radius:16px;background:#11192b}.result h3{font-size:17px;font-weight:650;margin:0 0 8px;line-height:1.4}.result a{color:#91baff;text-decoration:none}.result a:hover{text-decoration:underline}.url{font-size:12px;color:#7f91ad;overflow-wrap:anywhere;margin-bottom:8px}.result p{margin:0;color:#c0c9da;line-height:1.6;font-size:14px}.read-layout{display:none;gap:18px}.reader-card{border:1px solid #ffffff17;background:#11192b;border-radius:17px;padding:22px}.reader-card h2{margin:0 0 7px;font-size:23px;letter-spacing:-.025em}.reader-card .url{margin-bottom:16px}.reader-text{white-space:pre-wrap;line-height:1.8;color:#d0d7e5;overflow-wrap:anywhere;font-size:15px}.links{border-top:1px solid #ffffff18;margin-top:20px;padding-top:16px}.links a{display:block;color:#91baff;margin:9px 0;overflow-wrap:anywhere;font-size:13px}
-footer{max-width:900px;margin:0 auto;padding:0 22px 34px;color:#66748e;font-size:12px;text-align:center;line-height:1.7}
-@media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:4vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.hero p{font-size:14px}.result{padding:16px}}
+main{max-width:850px;margin:9vh auto 70px;padding:0 22px}
+.hero{text-align:center;margin-bottom:34px}
+h1{font-size:clamp(35px,6vw,58px);letter-spacing:-.055em;line-height:1.05;margin:0 0 14px}
+h1 span{color:#ff704d}
+.lead{color:#aab5ca;margin:0 auto;font-size:16px;line-height:1.7;max-width:600px}
+.searchbar{display:flex;gap:10px;background:#141c30;border:1px solid #ffffff24;border-radius:18px;padding:8px;box-shadow:0 22px 70px #0004;margin:28px 0 0}
+.searchbar input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;padding:13px;font:inherit;font-size:16px}
+.searchbar input::placeholder{color:#7887a2}
+.searchbar input:focus-visible{outline:2px solid #ff704d;outline-offset:2px;border-radius:8px}
+button{border:0;border-radius:12px;background:#ff623c;color:white;padding:12px 20px;font:600 15px inherit;cursor:pointer;white-space:nowrap}
+button:hover{background:#ed4f2b}
+.hint{color:#7e8ba4;font-size:12px;text-align:center;margin:14px 0 0;line-height:1.7}
+.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:38px}
+.card{padding:19px;border:1px solid #ffffff16;border-radius:16px;background:#11192b}
+.card h2{font-size:15px;margin:0 0 8px}
+.card p{font-size:13px;line-height:1.7;color:#aab5ca;margin:0}
+.card a{color:#ff987f}
+footer{max-width:850px;margin:0 auto;padding:0 22px 34px;color:#7886a0;font-size:12px;text-align:center;line-height:1.8}
+@media(max-width:600px){header{padding:18px}.pill{display:none}main{margin-top:6vh}.searchbar{flex-wrap:wrap}.searchbar input{flex-basis:100%}.searchbar button{width:100%}.lead{font-size:14px}.info{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><div class="brand"><span class="logo">✦</span> DuckDuckGo Reader</div><span class="pill">DuckDuckGo · Public pages</span></header>
+<header>
+  <div class="brand"><span class="logo" aria-hidden="true">✦</span> DuckDuckGo Search</div>
+  <span class="pill">Static · No search API key</span>
+</header>
 <main>
-<section class="hero">
-<h1>Find it. <span>Read it.</span></h1>
-<p>A focused search homepage with a clean, text-first public-page reader.</p>
-<div class="tabs" role="tablist" aria-label="Mode">
-<button class="tab active" id="searchTab" role="tab" aria-selected="true">Search the web</button>
-<button class="tab" id="readerTab" role="tab" aria-selected="false">Read a page</button>
-</div>
-<form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get"><input id="query" name="q" aria-label="Search query" placeholder="Search the web with DuckDuckGo…" autocomplete="off" required><button class="primary" id="searchButton" type="submit">Search ↗</button></form>
-<form class="searchbar" id="readerForm" style="display:none"><input id="pageUrl" aria-label="Page URL" type="url" placeholder="https://example.com/article" autocomplete="url" required><button class="primary" id="readButton">Read page ↗</button></form>
-<div class="hint" id="hint">Search opens DuckDuckGo directly. No search API key required.</div>
-<div id="status" role="status" aria-live="polite"></div>
-</section>
-<section id="results" class="results" aria-label="Search results"></section>
-<section id="readLayout" class="read-layout" aria-label="Readable page">
-<article class="reader-card"><h2 id="pageTitle">Page</h2><div id="pageSource" class="url"></div><p id="pageDescription" style="color:#aab5ca;line-height:1.6"></p><div id="pageText" class="reader-text"></div><div class="links"><strong>Links on this page</strong><div id="pageLinks"></div></div></article>
-</section>
+  <section class="hero" aria-labelledby="title">
+    <h1 id="title">Search on your terms<span>.</span></h1>
+    <p class="lead">A simple search launch page. Your query is sent directly to DuckDuckGo in a separate tab, while this homepage stays open.</p>
+    <form class="searchbar" id="searchForm" action="https://duckduckgo.com/" method="get" target="_blank" rel="noopener noreferrer">
+      <input id="query" name="q" type="search" aria-label="Search DuckDuckGo" placeholder="What would you like to search?" autocomplete="off" required>
+      <button type="submit">Search DuckDuckGo ↗</button>
+    </form>
+    <p class="hint">Searches are not saved by this page. DuckDuckGo receives the query, and your browser may keep normal history for the new tab.</p>
+  </section>
+  <section class="info" aria-label="How it works">
+    <article class="card">
+      <h2>Direct DuckDuckGo search</h2>
+      <p>The form uses DuckDuckGo's HTTPS search URL and the standard <code>q</code> query parameter. No API key, search proxy, or backend is needed.</p>
+    </article>
+    <article class="card">
+      <h2>Separate tab, not a separate browser</h2>
+      <p>Search results open in a new tab so this site remains open. A website cannot create a separate browser profile or guarantee isolation from your computer's browser history. For stronger local separation, use a separate browser profile or a private window.</p>
+    </article>
+    <article class="card">
+      <h2>No search history stored here</h2>
+      <p>This static page has no search-history code, analytics, cookies, or local storage. It does not send the query to a server operated by this project.</p>
+    </article>
+    <article class="card">
+      <h2>Know where the query goes</h2>
+      <p>When you submit a search, DuckDuckGo receives your query and normal connection metadata. See <a href="https://duckduckgo.com/privacy" target="_blank" rel="noopener noreferrer">DuckDuckGo's privacy policy</a>.</p>
+    </article>
+  </section>
 </main>
-<footer>Reader safety: HTTPS only, server-configured host allowlist, private-network address checks, limited redirects and response size. Page scripts are not run.</footer>
-<script>
-const $ = (s) => document.querySelector(s);
-const searchTab = $("#searchTab"), readerTab = $("#readerTab");
-function setMode(mode) {
-  const searching = mode === "search";
-  searchTab.classList.toggle("active", searching); readerTab.classList.toggle("active", !searching);
-  searchTab.setAttribute("aria-selected", String(searching)); readerTab.setAttribute("aria-selected", String(!searching));
-  $("#searchForm").style.display = searching ? "flex" : "none";
-  $("#readerForm").style.display = searching ? "none" : "flex";
-  $("#hint").textContent = searching ? "Search opens DuckDuckGo directly. No search API key required." : "Reads text from allowlisted public pages only. No scripts, cookies, or interactive page content are loaded.";
-  $("#status").textContent = ""; $("#results").replaceChildren(); $("#readLayout").style.display = "none";
-}
-searchTab.addEventListener("click", () => setMode("search"));
-readerTab.addEventListener("click", () => setMode("reader"));
-// On static hosting (for example GitHub Pages), the search form works without a backend.
-// Hide the optional reader tab when the Node API is not present.
-fetch("/api/health", { headers: { "Accept": "application/json" } })
-  .then(response => { if (!response.ok) throw new Error("No reader API"); return response.json(); })
-  .catch(() => { readerTab.hidden = true; setMode("search"); });
-function setStatus(message) { $("#status").textContent = message; }
-function el(tag, cls, value) { const n = document.createElement(tag); if (cls) n.className = cls; if (value !== undefined) n.textContent = value; return n; }
-$("#searchForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const q = $("#query").value.trim();
-  if (!q) return;
-  const destination = new URL("https://duckduckgo.com/");
-  destination.searchParams.set("q", q);
-  window.location.assign(destination.href);
-});
-$("#readerForm").addEventListener("submit", async event => {
-  event.preventDefault(); const url = $("#pageUrl").value.trim(); if (!url) return;
-  $("#readButton").disabled = true; $("#results").replaceChildren(); $("#readLayout").style.display = "none"; setStatus("Fetching and extracting readable text…");
-  try {
-    const response = await fetch("/api/read", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
-    const data = await response.json(); if (!response.ok) throw new Error(data.error || "Could not read page.");
-    const page = data.page || {};
-    $("#pageTitle").textContent = page.title || "Readable page";
-    $("#pageSource").textContent = data.url;
-    $("#pageDescription").textContent = page.description || "";
-    $("#pageText").textContent = page.text || "No readable text was found.";
-    const links = $("#pageLinks"); links.replaceChildren();
-    for (const item of page.links || []) { const a = el("a", "", item.label + " ↗"); a.href = item.url; a.target = "_blank"; a.rel = "noopener noreferrer"; links.append(a); }
-    $("#readLayout").style.display = "grid"; setStatus("Page extracted as plain text. Page scripts were not executed.");
-  } catch (error) { setStatus(error.message); }
-  finally { $("#readButton").disabled = false; }
-});
-</script>
+<footer>Hosted as a static GitHub Pages site. HTTPS protects the connection, but this page does not provide anonymity or isolate browser-level history.</footer>
 </body>
 </html>
